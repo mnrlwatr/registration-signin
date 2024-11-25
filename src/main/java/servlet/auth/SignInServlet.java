@@ -1,5 +1,7 @@
 package servlet.auth;
 
+import constant.RouteConstants;
+import constant.HtmlConstants;
 import dto.AuthFormDto;
 import entity.User;
 import jakarta.servlet.ServletException;
@@ -11,12 +13,12 @@ import service.DataExtractor;
 
 import java.io.IOException;
 
-@WebServlet(urlPatterns = "/signin")
+@WebServlet(urlPatterns = RouteConstants.SIGNIN)
 public class SignInServlet extends BaseAuthServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.getRequestDispatcher("/signin.html").forward(req, resp);
+        req.getRequestDispatcher(HtmlConstants.SIGNIN).forward(req, resp);
     }
 
     @Override
@@ -28,7 +30,7 @@ public class SignInServlet extends BaseAuthServlet {
             resp.sendError(403, "Email is not registered");
         } else if (userService.verifyPassword(user, userData.password())) {
             session.setAttribute("UserID", user.getId());
-            resp.sendRedirect("/account");
+            resp.sendRedirect(RouteConstants.ACCOUNT);
         } else {
             resp.sendError(403, "Incorrect password");
         }

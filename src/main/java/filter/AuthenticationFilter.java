@@ -1,5 +1,6 @@
 package filter;
 
+import constant.RouteConstants;
 import jakarta.servlet.*;
 import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,7 +20,7 @@ public class AuthenticationFilter implements Filter {
         if (session.getAttribute("UserID")!=null) {
             chain.doFilter(req, res);
         } else {
-            res.sendRedirect("/signin");
+            res.sendRedirect(RouteConstants.SIGNIN);
         }
 
     }
