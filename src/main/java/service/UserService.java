@@ -18,7 +18,6 @@ public class UserService {
         if (findUserByEmail(userData.email())!=null){
             return false;
         }
-        System.out.println("userData.password() = " + userData.password());
         return userDAO.addUser(User.builder().
                 id(UUID.randomUUID()).
                 firstname(userData.firstname()).
