@@ -1,1 +1,1 @@
-# Simple Registration/Signin using Java Servlet,MySQL,Hibernate (Незаконченный проект)
+# Very Simple Registration/Signin using Java Servlet,PostgreSQL,Hibernate
