@@ -25,9 +25,9 @@ public class SignInServlet extends BaseAuthServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession();
         AuthFormDto userData = DataExtractor.extractAuthData(req);
-        User user = userService.findUserByEmail(userData.email());
+        User user = userService.getUserByEmail(userData.email());
         if (user==null) {
-            resp.sendError(403, "Email is not registered");
+            resp.sendError(403, "Account with email:"+ userData.email() +" is not registered");
         } else if (userService.verifyPassword(user, userData.password())) {
             session.setAttribute("UserID", user.getId());
             resp.sendRedirect(RouteConstants.ACCOUNT);

@@ -26,7 +26,7 @@ public class RegistrationServlet extends BaseAuthServlet {
         if (userService.registerNewUser(userData)) {
             resp.sendRedirect(RouteConstants.SIGNIN);
         } else {
-            resp.sendError(400, "Account with this email already registered, try to Sign in");
+            resp.sendError(400, "Account with email:"+ userData.email()+" already registered, try to Sign in");
         }
     }
 }

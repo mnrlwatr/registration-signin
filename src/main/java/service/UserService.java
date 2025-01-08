@@ -6,8 +6,6 @@ import entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import java.util.UUID;
-
 @RequiredArgsConstructor
 public class UserService {
 
@@ -15,11 +13,10 @@ public class UserService {
     private final UserDAO userDAO;
 
     public boolean registerNewUser(RegistrationFormDto userData) {
-        if (findUserByEmail(userData.email())!=null){
+        if (getUserByEmail(userData.email())!=null){
             return false;
         }
-        return userDAO.addUser(User.builder().
-                id(UUID.randomUUID()).
+        return userDAO.insertUser(User.builder().
                 firstname(userData.firstname()).
                 lastname(userData.lastname()).
                 email(userData.email()).
@@ -27,15 +24,12 @@ public class UserService {
                 build());
     }
 
-    public User findUserByEmail(String email) {
-        return userDAO.getUsersStream().
-                filter(user -> user.getEmail().equals(email)).
-                findFirst().
-                orElse(null);
-    }
-
     public boolean verifyPassword(User user, String password){
         return passwordEncoder.matches(password, user.getPassword());
+    }
+
+    public User getUserByEmail(String email){
+        return userDAO.findUserByEmail(email).orElse(null);
     }
 
 
