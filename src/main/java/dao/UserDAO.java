@@ -6,6 +6,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.hibernate.query.MutationQuery;
 import org.hibernate.query.Query;
 
 import java.util.Optional;
@@ -52,5 +53,20 @@ public class UserDAO {
         return Optional.ofNullable(user);
     }
 
+    public void deleteUserById(UUID id) {
+        Transaction transaction = null;
+        try (Session session = sessionFactory.openSession()) {
+            transaction = session.beginTransaction();
+            MutationQuery mutationQuery = session.createMutationQuery("DELETE FROM User u WHERE id = :id");
+            mutationQuery.setParameter("id", id);
+            mutationQuery.executeUpdate();
+            transaction.commit();
+        } catch (HibernateException e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            throw e;
+        }
+    }
 
 }
