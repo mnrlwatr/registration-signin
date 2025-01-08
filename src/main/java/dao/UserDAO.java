@@ -6,6 +6,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.hibernate.query.Query;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -33,7 +34,9 @@ public class UserDAO {
     public Optional<User> findUserByEmail(String email) {
         User user =null;
         try (Session session = sessionFactory.openSession()) {
-            user = session.get(User.class, email);
+            Query<User> query = session.createQuery("FROM User u WHERE u.email = :email", User.class);
+            query.setParameter("email", email);
+            user=query.uniqueResult();
         } catch (HibernateException he) {
             he.printStackTrace();
         }
