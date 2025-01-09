@@ -53,7 +53,7 @@ public class UserDAO {
         return Optional.ofNullable(user);
     }
 
-    public void deleteUserById(UUID id) {
+    public boolean deleteUserById(UUID id) {
         Transaction transaction = null;
         try (Session session = sessionFactory.openSession()) {
             transaction = session.beginTransaction();
@@ -61,11 +61,28 @@ public class UserDAO {
             mutationQuery.setParameter("id", id);
             mutationQuery.executeUpdate();
             transaction.commit();
+            return true;
         } catch (HibernateException e) {
             if (transaction != null) {
                 transaction.rollback();
             }
-            throw e;
+            return false;
+        }
+    }
+
+    public boolean deleteUser(User user) {
+        Transaction transaction=null;
+        try (Session session = sessionFactory.openSession()) {
+            transaction = session.beginTransaction();
+            session.remove(user);
+            transaction.commit();
+            return true;
+        }
+        catch(HibernateException he) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            return false;
         }
     }
 
