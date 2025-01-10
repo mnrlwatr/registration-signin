@@ -1,5 +1,6 @@
 package listener;
 
+import constant.HibernateCfg;
 import dao.UserDAO;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletContextEvent;
@@ -17,7 +18,7 @@ public class InitializationListener implements ServletContextListener {
     public void contextInitialized(ServletContextEvent sce) {
         ServletContext servletContext = sce.getServletContext();
 
-        SessionFactory sessionFactory = new Configuration().configure().buildSessionFactory();
+        SessionFactory sessionFactory = new Configuration().configure(HibernateCfg.HIBERNATE_CFG_FILE).buildSessionFactory();
         servletContext.setAttribute("userService", new UserService(new BCryptPasswordEncoder(),new UserDAO(sessionFactory)));
     }
 }
