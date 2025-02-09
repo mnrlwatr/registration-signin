@@ -2,7 +2,10 @@ package dao;
 
 import entity.User;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.*;
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.hibernate.query.MutationQuery;
 import org.hibernate.query.Query;
 
@@ -36,7 +39,7 @@ public class UserDAO {
             query.setParameter("email", email);
             user=query.uniqueResult();
         } catch (HibernateException he) {
-            throw new RuntimeException(he);
+            he.printStackTrace();
         }
         return Optional.ofNullable(user);
     }
@@ -45,7 +48,7 @@ public class UserDAO {
         try (Session session = sessionFactory.openSession()) {
             user=session.find(User.class,id);
         } catch (HibernateException he) {
-            throw new RuntimeException(he);
+            he.printStackTrace();
         }
         return Optional.ofNullable(user);
     }
@@ -80,29 +83,6 @@ public class UserDAO {
                 transaction.rollback();
             }
             return false;
-        }
-    }
-
-    public boolean updateUser (User user) {
-        Transaction transaction=null;
-        try (Session session = sessionFactory.openSession()) {
-            transaction=session.beginTransaction();
-            session.merge(user);
-            transaction.commit();
-            return true;
-        } catch(HibernateException he) {
-            if(transaction != null) {
-                transaction.rollback();
-            }
-            return false;
-        }
-    }
-
-    public User getReference (UUID id){
-        try (Session session = sessionFactory.openSession()) {
-          return session.getReference(User.class,id);
-        } catch(HibernateException he) {
-            throw new RuntimeException(he);
         }
     }
 
