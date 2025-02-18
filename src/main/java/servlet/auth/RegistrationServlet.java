@@ -3,6 +3,7 @@ package servlet.auth;
 import constant.RouteConstants;
 import constant.HtmlConstants;
 import dto.RegistrationFormDto;
+import exceptions.UserAlreadyExistException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,10 +24,14 @@ public class RegistrationServlet extends BaseAuthServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         RegistrationFormDto userData = DataExtractor.extractRegistrationData(req);
-        if (userService.registerNewUser(userData)) {
-            resp.sendRedirect(RouteConstants.SIGNIN);
-        } else {
-            resp.sendError(400, "Account with email:"+ userData.email()+" already registered, try to Sign in");
+        try {
+            if (userService.registerNewUser(userData)) {
+                resp.sendRedirect(RouteConstants.SIGNIN);
+            }
+        } catch (UserAlreadyExistException e) {
+            resp.sendError(400, "Account with email:" + userData.email() + " already registered, try to Sign in");
         }
+
+
     }
 }

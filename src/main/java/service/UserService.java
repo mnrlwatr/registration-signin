@@ -3,8 +3,10 @@ package service;
 import dao.UserDAO;
 import dto.RegistrationFormDto;
 import entity.User;
+import exceptions.UserAlreadyExistException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import service.validator.EmailValidator;
 
 @RequiredArgsConstructor
 public class UserService {
@@ -12,10 +14,11 @@ public class UserService {
     private final BCryptPasswordEncoder passwordEncoder;
     private final UserDAO userDAO;
 
-    public boolean registerNewUser(RegistrationFormDto userData) {
+    public boolean registerNewUser(RegistrationFormDto userData) throws UserAlreadyExistException {
         if (getUserByEmail(userData.email())!=null){
-            return false;
+            throw new UserAlreadyExistException();
         }
+
         return userDAO.insertUser(User.builder().
                 firstname(userData.firstname()).
                 lastname(userData.lastname()).
