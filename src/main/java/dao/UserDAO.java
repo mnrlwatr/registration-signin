@@ -8,6 +8,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.query.MutationQuery;
 import org.hibernate.query.Query;
+import service.update.AbstractUserUpdater;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -84,6 +85,23 @@ public class UserDAO {
             }
             return false;
         }
+    }
+
+    public boolean updateUser (UUID userID, AbstractUserUpdater updater){
+        Transaction transaction =null;
+        try (Session session = sessionFactory.openSession()) {
+            transaction=session.beginTransaction();
+            User user = session.getReference(User.class, userID);
+            updater.executeUpdate(user);
+            transaction.commit();
+            return true;
+        } catch (HibernateException e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            return false;
+        }
+
     }
 
 }
